@@ -1308,17 +1308,18 @@ class EnumSubDomain(object):
             self.loop.run_until_complete(self.start(tasks, len(self.domains_rs)))
 
         # write output
-        tmp_dir = '/tmp/esd'
+        tmp_dir = 'esd'
         if not os.path.isdir(tmp_dir):
             os.mkdir(tmp_dir, 0o777)
-        output_path_with_time = '{td}/.{domain}_{time}.esd'.format(td=tmp_dir, domain=self.domain, time=datetime.datetime.now().strftime("%Y-%m_%d_%H-%M"))
-        output_path = '{td}/.{domain}.esd'.format(td=tmp_dir, domain=self.domain)
+        output_path_with_time = '{td}/{domain}_{time}.esd'.format(td=tmp_dir, domain=self.domain, time=datetime.datetime.now().strftime("%Y-%m_%d_%H-%M"))
+        #output_path = '{td}/.{domain}.esd'.format(td=tmp_dir, domain=self.domain)
         if len(self.data):
             max_domain_len = max(map(len, self.data)) + 2
         else:
             max_domain_len = 2
         output_format = '%-{0}s%-s\n'.format(max_domain_len)
-        with open(output_path_with_time, 'w') as opt, open(output_path, 'w') as op:
+        #with open(output_path_with_time, 'w') as opt, open(output_path, 'w') as op:
+        with open(output_path_with_time, 'w') as opt:
             for domain, ips in self.data.items():
                 # The format is consistent with other scanners to ensure that they are
                 # invoked at the same time without increasing the cost of
@@ -1328,10 +1329,10 @@ class EnumSubDomain(object):
                 else:
                     ips_split = ','.join(ips)
                 con = output_format % (domain, ips_split)
-                op.write(con)
+                #op.write(con)
                 opt.write(con)
 
-        logger.info('Output: {op}'.format(op=output_path))
+        #logger.info('Output: {op}'.format(op=output_path))
         logger.info('Output with time: {op}'.format(op=output_path_with_time))
         logger.info('Total domain: {td}'.format(td=len(self.data)))
         time_consume = int(time.time() - start_time)
